@@ -1,0 +1,213 @@
+:define BATCH               100
+:define-eval EPOCH          50000 / $BATCH
+
+:define DROP_PATH_RATIO     0.15
+
+:define LR1 1
+:define LR2 2
+:define WD 1
+
+:begin load-data data label
+layer {
+  name: "main"
+  type: "HDF5Data"
+  top: "data"
+  top: "label"
+  hdf5_data_param {
+    # NOTE: You have to set this up yourself!
+    source: "/path/to/cifar10_train.txt"
+    batch_size: $BATCH
+    shuffle: true
+  }
+  include: { phase: TRAIN }
+}
+
+layer {
+  name: "main"
+  type: "HDF5Data"
+  top: "data"
+  top: "label"
+  hdf5_data_param {
+    # NOTE: You have to set this up yourself!
+    source: "/path/to/cifar10_test.txt"
+    batch_size: $BATCH
+    shuffle: true
+  }
+  include: { phase: TEST }
+}
+:end
+
+:begin loss weight prediction label top
+layer {
+  name: "$top"
+  type: "SoftmaxWithLoss"
+  bottom: "$prediction"
+  bottom: "$label"
+  top: "$top"
+  loss_weight: $weight
+  include: { phase: TRAIN }
+}
+
+layer {
+  name: "accuracy_$top"
+  type: "Accuracy"
+  bottom: "$prediction"
+  bottom: "$label"
+  top: "accuracy_$top"
+  include: { phase: TEST }
+}
+:end
+
+:begin conv name rate size pad num bottom top
+layer {
+  bottom: "${bottom}"
+  top: "${top}"
+  name: "${top}"
+  param {
+    lr_mult: $LR1
+    decay_mult: $WD
+    name: "$name"
+  }
+  param {
+    lr_mult: $LR2
+    decay_mult: 0
+    name: "${name}_b"
+  }
+  type: "Convolution"
+  convolution_param {
+    num_output: ${num}
+    pad: ${pad}
+    kernel_size: ${size}
+    weight_filler {
+      type: "xavier"
+    }
+    bias_filler {
+      type: "constant"
+    }
+  }
+}
+layer {
+  name: "dropout_${top}"
+  type: "Dropout"
+  bottom: "${top}"
+  top: "${top}"
+  dropout_param {
+    dropout_ratio: ${rate}
+  }
+}
+layer {
+  name: "batch_${top}"
+  type: "BatchNorm"
+  bottom: "${top}"
+  top: "${top}"
+  param { lr_mult: 0 }
+  param { lr_mult: 0 }
+  param { lr_mult: 0 }
+}
+layer {
+  name: "relu_${top}"
+  type: "ReLU"
+  bottom: "${top}"
+  top: "${top}"
+}
+:end
+
+:begin pool2 bottom top
+layer {
+  bottom: "${bottom}"
+  top: "${top}"
+  name: "${top}"
+  type: "Pooling"
+  pooling_param {
+    pool: MAX
+    kernel_size: 2
+    stride: 2
+  }
+}
+:end
+
+:begin join2 bottom0 bottom1 top
+layer {
+  name: "join_${top}"
+  type: "FractalJoin"
+  bottom: "${bottom0}"
+  bottom: "${bottom1}"
+  top: "${top}"
+  drop_add_param {
+    drop_path_ratio: $DROP_PATH_RATIO
+  }
+}
+:end
+
+:begin join3 bottom0 bottom1 bottom2 top
+layer {
+  name: "join_${top}"
+  type: "FractalJoin"
+  bottom: "${bottom0}"
+  bottom: "${bottom1}"
+  bottom: "${bottom2}"
+  top: "${top}"
+  drop_add_param {
+    drop_path_ratio: $DROP_PATH_RATIO
+  }
+}
+:end
+
+:begin join4 bottom0 bottom1 bottom2 bottom3 top
+layer {
+  name: "join_${top}"
+  type: "FractalJoin"
+  bottom: "${bottom0}"
+  bottom: "${bottom1}"
+  bottom: "${bottom2}"
+  bottom: "${bottom3}"
+  top: "${top}"
+  drop_add_param {
+    drop_path_ratio: $DROP_PATH_RATIO
+  }
+}
+:end
+
+:begin join5 bottom0 bottom1 bottom2 bottom3 bottom4 top
+layer {
+  name: "join_${top}"
+  type: "FractalJoin"
+  bottom: "${bottom0}"
+  bottom: "${bottom1}"
+  bottom: "${bottom2}"
+  bottom: "${bottom3}"
+  bottom: "${bottom4}"
+  top: "${top}"
+  drop_add_param {
+    drop_path_ratio: $DROP_PATH_RATIO
+  }
+}
+:end
+
+:begin inner name num bottom top
+layer {
+  name: "${top}"
+  type: "InnerProduct"
+  bottom: "${bottom}"
+  top: "${top}"
+  param {
+    lr_mult: $LR1
+    decay_mult: $WD
+    name: "${name}"
+  }
+  param {
+    lr_mult: $LR2
+    decay_mult: 0
+    name: "${name}_b"
+  }
+  inner_product_param {
+    num_output: ${num}
+    weight_filler {
+      type: "xavier"
+    }
+    bias_filler {
+      type: "constant"
+    }
+  }
+}
+:end
