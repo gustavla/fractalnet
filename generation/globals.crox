@@ -133,7 +133,7 @@ layer {
   bottom: "${bottom0}"
   bottom: "${bottom1}"
   top: "${top}"
-  drop_add_param {
+  fractal_join_param {
     drop_path_ratio: $DROP_PATH_RATIO
   }
 }
@@ -147,7 +147,7 @@ layer {
   bottom: "${bottom1}"
   bottom: "${bottom2}"
   top: "${top}"
-  drop_add_param {
+  fractal_join_param {
     drop_path_ratio: $DROP_PATH_RATIO
   }
 }
@@ -162,7 +162,7 @@ layer {
   bottom: "${bottom2}"
   bottom: "${bottom3}"
   top: "${top}"
-  drop_add_param {
+  fractal_join_param {
     drop_path_ratio: $DROP_PATH_RATIO
   }
 }
@@ -178,7 +178,7 @@ layer {
   bottom: "${bottom3}"
   bottom: "${bottom4}"
   top: "${top}"
-  drop_add_param {
+  fractal_join_param {
     drop_path_ratio: $DROP_PATH_RATIO
   }
 }
