@@ -11,7 +11,7 @@ CLASSES = 10
 GLOBAL_DROP_PATH = False
 
 FILTERS = [64, 128, 256, 512, 512]
-DROPOUTS = [0.0, 0.1, 0.2, 0.3, 0.4]
+DROPOUTS = [0.1, 0.2, 0.3, 0.4]
 # Set drop-path in globals.crox
 
 
