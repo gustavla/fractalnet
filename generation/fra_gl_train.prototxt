@@ -7,10 +7,10 @@ layer {
   transform_param {
     mirror: true
     crop_size: 32
-    mean_file: "/home/admins/data/cifar10/mean.binaryproto"
+    mean_file: "/path/to/your/cifar10/mean.binaryproto"
   }
   data_param {
-    source: "/home/admins/data/cifar10/train"
+    source: "/path/to/your/cifar10/train"
     batch_size: 64
     backend: LMDB
   }

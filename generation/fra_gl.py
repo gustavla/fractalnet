@@ -4,10 +4,10 @@ from caffe import layers as L, params as P, to_proto
 import caffe_net_fun
 
 
-def fractal_unit(bottom, n_out, phase, stride=1):
+def fractal_unit(bottom, n_out, phase):
     conv = bottom
     conv = caffe_net_fun.conv_relu_bn(
-        conv, ks=3, n_out=n_out, phase=phase, pad=1, stride=stride)
+        conv, ks=3, n_out=n_out, phase=phase, pad=1)
     return conv
 
 
@@ -36,13 +36,13 @@ def fractal_drop_all(bottom, ratio, pool=False):
         return caffe_net_fun.fractal_drop(ratio, bottom[0], bottom[1])
 
 
-def fractal_block(bottom, stride, n_out, phase, total_level, desc=1):
+def fractal_block(bottom, n_out, phase, total_level):
     trigger = L.GlobalDropTrigger(bottom, global_drop_ratio=0.5)
 
     def recursive_struct(bt, level):
         ratio = 0.15
         if level <= 1:
-            return [fractal_unit(bt, n_out, phase, stride)], [ratio]
+            return [fractal_unit(bt, n_out, phase)], [ratio]
         else:
             unit, unit_ratio = recursive_struct(bt, level - 1)
             if len(unit) >= 2:
@@ -67,11 +67,11 @@ def caffe_net(lmdb, mean_file, batch_size=24, phase=False):
         batch_size=batch_size,
         ntop=2,
         transform_param=dict(crop_size=32, mean_file=mean_file, mirror=phase))
-    fractal_unit = fractal_block(conv, 1, 64, phase, 4)
-    fractal_unit = fractal_block(fractal_unit, 1, 128, phase, 4)
-    fractal_unit = fractal_block(fractal_unit, 1, 256, phase, 4)
-    fractal_unit = fractal_block(fractal_unit, 1, 512, phase, 4)
-    fractal_unit = fractal_block(fractal_unit, 1, 512, phase, 4)
+    fractal_unit = fractal_block(data, 64, phase, 4)
+    fractal_unit = fractal_block(fractal_unit, 128, phase, 4)
+    fractal_unit = fractal_block(fractal_unit, 256, phase, 4)
+    fractal_unit = fractal_block(fractal_unit, 512, phase, 4)
+    fractal_unit = fractal_block(fractal_unit, 512, phase, 4)
     fc = caffe_net_fun.full_connect(fractal_unit, 10)
     loss = L.SoftmaxWithLoss(fc, label)
     if not phase:
