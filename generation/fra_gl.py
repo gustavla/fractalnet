@@ -12,6 +12,9 @@ def fractal_unit(bottom, n_out, phase):
 
 
 def fractal_drop_all(bottom, ratio, pool=False):
+    ```
+	if is the last FractalJoin, reductions will be taked
+	```
     if pool:
         for __i in range(len(bottom) - 1):
             bottom[__i] = caffe_net_fun.max_pool(bottom[__i], ks=2, stride=2)
@@ -37,6 +40,10 @@ def fractal_drop_all(bottom, ratio, pool=False):
 
 
 def fractal_block(bottom, n_out, phase, total_level):
+    ```
+	n_out is the number of filters
+	total_level is the columns
+	```
     trigger = L.GlobalDropTrigger(bottom, global_drop_ratio=0.5)
 
     def recursive_struct(bt, level):
