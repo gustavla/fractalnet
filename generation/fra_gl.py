@@ -91,8 +91,8 @@ def make_net(train_file, test_file, mean_file, train, test):
 
 
 if __name__ == '__main__':
-    root_dir = '/home/admins/data/cifar10'
-    make_net('/home/admins/experiments/new/fra_gl_train.prototxt',
-             '/home/admins/experiments/new/fra_gl_test.prototxt',
+    root_dir = '/path/to/your/cifar10'
+    make_net('/path/to/your/want/to/save/fra_gl_train.prototxt',
+             '/path/to/your/want/to/save/fra_gl_test.prototxt',
              root_dir + '/mean.binaryproto', root_dir + '/train',
              root_dir + '/test')
