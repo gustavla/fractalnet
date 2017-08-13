@@ -15,7 +15,7 @@ namespace caffe {
  *        During training, operands can be stochastically dropped out to
  *        prevent co-adaptation of network paths.
  *
- * @author Gustav Larsson
+ * @author Liang Kang
  */
 template <typename Dtype>
 class FractalJoinLayer : public Layer<Dtype> {
