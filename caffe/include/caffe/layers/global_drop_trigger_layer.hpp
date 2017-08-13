@@ -11,7 +11,7 @@ namespace caffe {
 
 /**
  * \ingroup ttic
- * @brief a trigger whitch decides whether global drop or not
+ * @brief a trigger which decides the fractal block will be global drop or not
  *
  * @author Liang Kang
  */
