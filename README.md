@@ -2,30 +2,27 @@ FractalNet
 ==========
 
 A fractal-based neural network architecture:
-
-* `Project page <http://people.cs.uchicago.edu/~larsson/fractalnet/>`__
-* `arXiv paper <https://arxiv.org/abs/1605.07648>`__
+[arXiv paper](https://arxiv.org/abs/1605.07648)
 
 Drop-path
 ---------
-We provide a reference implementation for the elementwise-mean layer with local
-drop-path. There is still no public release of local+global, but we suggest
-implementing this through tying weights. 
+I  provide a reference implementation for the elementwise layer with global and local drop-path.
+
+Ideal
+----
+I use a new layer `GlobalDropTrigger` as a messager. It sends information to all the ` FractalJoin` in the same fractal block, and tells them drop path as global or local.
 
 Caffe
-~~~~~
+-----
 See the ``caffe`` directory for code and more information.
 
 Fractal pattern generation
 --------------------------
-Wiring up a fractal network manually would take hours, so we provide simple
-Python scripts that will do it for you. See the ``generation`` directory for
-code and more information.
+Wiring up a fractal network manually would take hours, so we provide simple Python scripts that will do it for you. See the ``generation`` directory for code and more information.
 
 Data augmentation
 -----------------
-We use a Python layer in Caffe to implement data augmentation. It is not yet
-available here.
+We use a Python layer in Caffe to implement data augmentation. It is not yet available here.
 
 Cite
 ----
