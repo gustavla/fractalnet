@@ -22,7 +22,10 @@ experimental set up.
 .. _crox: https://github.com/gustavla/crox
 # NEW
 The `caffe_net_fun.py` file includes some usefull function used for generating net in pycaffe.
+
 The `fra_gl.py` file can generates full fractalnet.
+
 The `fra_gl_train.prototxt` file, and `fra_gl_test.prototxt` file is the prototxt file for caffe.
+
 The `fra_gl_test.jpg` image is visualized fractalnet.
 
