@@ -1,6 +1,33 @@
 FractalNet in Caffe
 ===================
 
+-----------------------
+**NOTICE!**
+the `blob.hpp` file is changed, I add a few lines code like:
+```
+  void SetGlobalDrop(bool global_drop) {
+      global_drop_ = global_drop;
+  }
+
+  bool IsGlobalDrop(){
+      return global_drop_;
+  }
+  ```
+  and change:
+  ```
+   public:
+  Blob()
+       : data_(), diff_(), count_(0), capacity_(0) {}
+```
+to:
+```
+ public:
+  Blob()
+       : data_(), diff_(), count_(0), capacity_(0), global_drop_(false) {}
+```
+
+ -------------------
+ 
 Copy all files into your Caffe folder. Then, add the following to your ``src/caffe/proto/caffe.proto`` file in ``LayerParameter``:
 
     optional FractalJoinParameter fractal_join_param = 1234;
