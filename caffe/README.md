@@ -12,6 +12,7 @@ the `blob.hpp` file is changed, I add a few lines code like:
   bool IsGlobalDrop(){
       return global_drop_;
   }
+  bool global_drop_;
   ```
   and change:
   ```
