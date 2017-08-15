@@ -57,6 +57,7 @@ template <typename Dtype>
 void FractalJoinLayer<Dtype>::Forward_cpu(const vector<Blob<Dtype>*>& bottom,
     const vector<Blob<Dtype>*>& top)
 {
+    fill(drops_.begin(), drops_.end(), true);
     if (this->phase_ == TRAIN) {
         unsigned int drop_mark_ = 0;
         bool global_drop_ = false;
