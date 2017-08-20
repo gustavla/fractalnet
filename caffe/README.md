@@ -48,6 +48,7 @@ message FractalJoinParameter {
   repeated float drop_path_ratio = 1;
   optional GlobalDropParameter global_drop = 2;
   optional bool sum_path_input = 3 [default = false];
+  optional bool global_drop_this = 4 [default = false];
 }
 
 message GlobalDropTriggerParameter {
@@ -60,7 +61,7 @@ message GlobalDropTriggerParameter {
 ```
 1. In `GlobalDropTriggerParameter`, `global_drop_ratio` is the probability of global drop. A `blob`'s shape also is specified, I use a specified-shape-`blob` as a messager to tell the `FractalJoin` to perform global drop or not, it also is the last `bottom` of `FractalJoin`, so this shape must be different from the path's.
 2. In `GlobalDropParameter`, `undrop_path_ratio` is the probability of the path which will be undropped. A `blob`'s shape also is specified, it must be equel to the shape specified in `GlobalDropTriggerParameter` of the same fractal block.
-3. In `FractalJoinParameter`, `drop_path_ratio` is the probability of the path which will be dropped, `global_drop` specify the parameters of global drop. A element-wise sum option is added. If `sum_path_input` is true, the `Join` will compute the elemnet-wise sum instead of the element-wise mean.
+3. In `FractalJoinParameter`, `drop_path_ratio` is the probability of the path which will be dropped, `global_drop` specify the parameters of global drop. A element-wise sum option is added. If `sum_path_input` is true, the `Join` will compute the elemnet-wise sum instead of the element-wise mean, `global_drop_this`  is the probability of doing global-drop as a single `Join`.
 
 Re-compile and you should now have access to the ``FractalJoin`` and  ``GlobalDropTrigger`` layer.
 
