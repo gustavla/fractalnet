@@ -12,7 +12,7 @@ void FractalJoinLayer<Dtype>::Forward_gpu(const vector<Blob<Dtype>*>& bottom,
 {
     if (this->phase_ == TRAIN) {
         unsigned int drop_mark_ = 0;
-        bool global_drop_ = false;
+        bool global_drop_ = this->layer_param().fractal_join_param().global_drop_this();
         if (bottom_size < bottom.size()) {
             global_drop_ = bottom[bottom_size]->IsGlobalDrop();
         }
