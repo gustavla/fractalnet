@@ -48,7 +48,7 @@ message FractalJoinParameter {
   repeated float drop_path_ratio = 1;
   optional GlobalDropParameter global_drop = 2;
   optional bool sum_path_input = 3 [default = false];
-  optional bool global_drop_this = 4 [default = false];
+  optional float global_drop_this = 4 [default = 0.0];
 }
 
 message GlobalDropTriggerParameter {
