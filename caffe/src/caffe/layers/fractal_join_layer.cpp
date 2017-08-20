@@ -30,7 +30,10 @@ void FractalJoinLayer<Dtype>::LayerSetUp(const vector<Blob<Dtype>*>& bottom,
     global_drops_.clear();
     GlobalDropParameter global_param = param.global_drop();
     std::copy(global_param.undrop_path_ratio().begin(), global_param.undrop_path_ratio().end(), std::back_inserter(global_drops_));
-    local_drops_.clear();
+    if (global_drops_.size() > 1) {
+		CHECK_EQ(global_drops_.size(), bottom_size);
+	}
+	local_drops_.clear();
     std::copy(param.drop_path_ratio().begin(), param.drop_path_ratio().end(), std::back_inserter(local_drops_));
     if (local_drops_.size() == 0) {
         for (int i = 0; i < bottom_size; ++i) {
@@ -68,11 +71,10 @@ void FractalJoinLayer<Dtype>::Forward_cpu(const vector<Blob<Dtype>*>& bottom,
             if (global_drops_.size() <= 1) {
                 drop_mark_ = caffe_rng_rand() % bottom_size;
             } else {
-                float sum = std::accumulate(global_drops_.begin(), global_drops_.end(), 0.0) * caffe_rng_rand() / UINT_MAX;
+                Dtype sum = std::accumulate(global_drops_.begin(), global_drops_.end(), Dtype(0)) * caffe_rng_rand() / UINT_MAX;
                 drop_mark_ = bottom_size;
-                while (sum > 0.0 && drop_mark_ > 0) {
-                    sum -= global_drops_.back();
-                    global_drops_.pop_back();
+                while (sum > Dtype(0) && drop_mark_ > 0) {
+                    sum -= global_drops_[bottom_size - 1];
                     --drop_mark_;
                 }
             }

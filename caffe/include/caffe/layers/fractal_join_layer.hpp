@@ -47,8 +47,8 @@ protected:
     unsigned int total_undrop_;
     unsigned int bottom_size;
     std::vector<bool> drops_;
-    std::vector<bool> global_drops_;
-    std::vector<bool> local_drops_;
+    std::vector<Dtype> global_drops_;
+    std::vector<Dtype> local_drops_;
 };
 
 } // namespace caffe
