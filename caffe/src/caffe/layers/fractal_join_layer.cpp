@@ -30,9 +30,6 @@ void FractalJoinLayer<Dtype>::LayerSetUp(const vector<Blob<Dtype>*>& bottom,
     global_drops_.clear();
     GlobalDropParameter global_param = param.global_drop();
     std::copy(global_param.undrop_path_ratio().begin(), global_param.undrop_path_ratio().end(), std::back_inserter(global_drops_));
-    if (global_drops_.size() > 1) {
-        CHECK_EQ(global_drops_.size(), bottom_size);
-    }
     local_drops_.clear();
     std::copy(param.drop_path_ratio().begin(), param.drop_path_ratio().end(), std::back_inserter(local_drops_));
     if (local_drops_.size() == 0) {
