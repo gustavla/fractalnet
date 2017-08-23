@@ -22,7 +22,7 @@ void FractalJoinLayer<Dtype>::Forward_gpu(const vector<Blob<Dtype>*>& bottom,
             global_drop_ = (sum > Dtype(.5));
         }
         if (global_drop_) {
-            if (global_drops_.size() <= 1) {
+            if (global_drops_.size() != bottom_size) {
                 drop_mark_ = caffe_rng_rand() % bottom_size;
             } else {
                 Dtype sum = std::accumulate(global_drops_.begin(), global_drops_.end(), Dtype(0)) * caffe_rng_rand() / UINT_MAX;
