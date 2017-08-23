@@ -14,7 +14,8 @@ namespace caffe {
  * @brief Joins several blobs of the same size using a mean or sum operation.
  *        During training, operands can be stochastically dropped out to
  *        prevent co-adaptation of network paths.
- *
+ 
+ * @author Gustav Larsson
  * @author Liang Kang
  */
 template <typename Dtype>
