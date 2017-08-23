@@ -31,9 +31,9 @@ void FractalJoinLayer<Dtype>::LayerSetUp(const vector<Blob<Dtype>*>& bottom,
     GlobalDropParameter global_param = param.global_drop();
     std::copy(global_param.undrop_path_ratio().begin(), global_param.undrop_path_ratio().end(), std::back_inserter(global_drops_));
     if (global_drops_.size() > 1) {
-		CHECK_EQ(global_drops_.size(), bottom_size);
-	}
-	local_drops_.clear();
+        CHECK_EQ(global_drops_.size(), bottom_size);
+    }
+    local_drops_.clear();
     std::copy(param.drop_path_ratio().begin(), param.drop_path_ratio().end(), std::back_inserter(local_drops_));
     if (local_drops_.size() == 0) {
         for (int i = 0; i < bottom_size; ++i) {
@@ -63,19 +63,20 @@ void FractalJoinLayer<Dtype>::Forward_cpu(const vector<Blob<Dtype>*>& bottom,
     fill(drops_.begin(), drops_.end(), true);
     if (this->phase_ == TRAIN) {
         unsigned int drop_mark_ = 0;
-        float global_drop_this = this->layer_param().fractal_join_param().global_drop_this();
-		bool global_drop_ = caffe_rng_rand() < (global_drop_this * UINT_MAX);
+        Dtype global_drop_this = this->layer_param().fractal_join_param().global_drop_this();
+        bool global_drop_ = caffe_rng_rand() < (global_drop_this * UINT_MAX);
         if (bottom_size < bottom.size()) {
-            global_drop_ = bottom[bottom_size]->IsGlobalDrop();
+            const Dtype* data = bottom[bottom_size]->cpu_data();
+            global_drop_ = (caffe_cpu_asum(1, data) > Dtype(.5));
         }
         if (global_drop_) {
-            if (global_drops_.size() < bottom_size) {
+            if (global_drops_.size() <= 1) {
                 drop_mark_ = caffe_rng_rand() % bottom_size;
             } else {
                 Dtype sum = std::accumulate(global_drops_.begin(), global_drops_.end(), Dtype(0)) * caffe_rng_rand() / UINT_MAX;
                 drop_mark_ = bottom_size;
                 while (sum > Dtype(0) && drop_mark_ > 0) {
-                    sum -= global_drops_[bottom_size - 1];
+                    sum -= global_drops_[drop_mark_ - 1];
                     --drop_mark_;
                 }
             }

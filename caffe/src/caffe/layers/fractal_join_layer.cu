@@ -10,21 +10,25 @@ template <typename Dtype>
 void FractalJoinLayer<Dtype>::Forward_gpu(const vector<Blob<Dtype>*>& bottom,
     const vector<Blob<Dtype>*>& top)
 {
+    fill(drops_.begin(), drops_.end(), true);
     if (this->phase_ == TRAIN) {
         unsigned int drop_mark_ = 0;
-        float global_drop_this = this->layer_param().fractal_join_param().global_drop_this();
-		bool global_drop_ = caffe_rng_rand() < (global_drop_this * UINT_MAX);
+        Dtype global_drop_this = this->layer_param().fractal_join_param().global_drop_this();
+        bool global_drop_ = caffe_rng_rand() < (global_drop_this * UINT_MAX);
         if (bottom_size < bottom.size()) {
-            global_drop_ = bottom[bottom_size]->IsGlobalDrop();
+            const Dtype* data = bottom[bottom_size]->gpu_data();
+            Dtype sum;
+            caffe_gpu_asum(1, data, &sum);
+            global_drop_ = (sum > Dtype(.5));
         }
         if (global_drop_) {
-            if (global_drops_.size() < bottom_size) {
+            if (global_drops_.size() <= 1) {
                 drop_mark_ = caffe_rng_rand() % bottom_size;
             } else {
                 Dtype sum = std::accumulate(global_drops_.begin(), global_drops_.end(), Dtype(0)) * caffe_rng_rand() / UINT_MAX;
                 drop_mark_ = bottom_size;
                 while (sum > Dtype(0) && drop_mark_ > 0) {
-                    sum -= global_drops_[bottom_size - 1];
+                    sum -= global_drops_[drop_mark_ - 1];
                     --drop_mark_;
                 }
             }

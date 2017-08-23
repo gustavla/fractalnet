@@ -36,7 +36,7 @@ protected:
         blob_bottom_vec_.push_back(blob_bottom_a_);
         blob_bottom_vec_.push_back(blob_bottom_b_);
         blob_bottom_vec_.push_back(blob_bottom_c_);
-        blob_bottom_vec_.push_back(blob_bottom_d_);
+//        blob_bottom_vec_.push_back(blob_bottom_d_);
         blob_top_vec_.push_back(blob_top_);
     }
     virtual ~FractalJoinLayerTest()
@@ -96,6 +96,8 @@ TYPED_TEST(FractalJoinLayerTest, TestSetUpDropPathGlobal)
     global_drop_param->add_undrop_path_ratio(0.0);
     global_drop_param->add_undrop_path_ratio(0.5);
     global_drop_param->add_undrop_path_ratio(0.0);
+    Dtype* data_d = this->blob_bottom_d_->mutable_cpu_data();
+    data_d[0] = Dtype(1);
     shared_ptr<FractalJoinLayer<Dtype> > layer(
         new FractalJoinLayer<Dtype>(layer_param));
     layer->SetUp(this->blob_bottom_vec_, this->blob_top_vec_);
@@ -113,9 +115,10 @@ TYPED_TEST(FractalJoinLayerTest, TestMean)
     fractal_join_param->add_drop_path_ratio(0.0);
     fractal_join_param->add_drop_path_ratio(0.0);
     fractal_join_param->add_drop_path_ratio(0.0);
+    Dtype* data_d = this->blob_bottom_d_->mutable_cpu_data();
+    data_d[0] = Dtype(0);
     shared_ptr<FractalJoinLayer<Dtype> > layer(
         new FractalJoinLayer<Dtype>(layer_param));
-    this->blob_bottom_d_->SetGlobalDrop(false);
     layer->SetUp(this->blob_bottom_vec_, this->blob_top_vec_);
     layer->Forward(this->blob_bottom_vec_, this->blob_top_vec_);
     const Dtype* data = this->blob_top_->cpu_data();
@@ -136,13 +139,15 @@ TYPED_TEST(FractalJoinLayerTest, TestMeanGlobal)
     fractal_join_param->add_drop_path_ratio(0.0);
     fractal_join_param->add_drop_path_ratio(0.0);
     fractal_join_param->add_drop_path_ratio(0.0);
+    fractal_join_param->set_global_drop_this(1.0);
     GlobalDropParameter* global_drop_param = fractal_join_param->mutable_global_drop();
     global_drop_param->add_undrop_path_ratio(1.0);
     global_drop_param->add_undrop_path_ratio(0.0);
     global_drop_param->add_undrop_path_ratio(0.0);
+    Dtype* data_d = this->blob_bottom_d_->mutable_cpu_data();
+    data_d[0] = Dtype(1);
     shared_ptr<FractalJoinLayer<Dtype> > layer(
         new FractalJoinLayer<Dtype>(layer_param));
-    this->blob_bottom_d_->SetGlobalDrop(true);
     layer->SetUp(this->blob_bottom_vec_, this->blob_top_vec_);
     layer->Forward(this->blob_bottom_vec_, this->blob_top_vec_);
     const Dtype* data = this->blob_top_->cpu_data();
@@ -159,7 +164,7 @@ TYPED_TEST(FractalJoinLayerTest, TestMeanGradient)
     LayerParameter layer_param;
     FractalJoinLayer<Dtype> layer(layer_param);
     GradientChecker<Dtype> checker(1e-2, 1e-3);
-    this->blob_bottom_vec_.pop_back();
+//    this->blob_bottom_vec_.pop_back();
     checker.CheckGradientEltwise(&layer, this->blob_bottom_vec_,
         this->blob_top_vec_);
 }
@@ -168,10 +173,9 @@ TYPED_TEST(FractalJoinLayerTest, TestMeanGradientGlobal)
 {
     typedef typename TypeParam::Dtype Dtype;
     LayerParameter layer_param;
-    this->blob_bottom_d_->SetGlobalDrop (true);
     FractalJoinLayer<Dtype> layer(layer_param);
     GradientChecker<Dtype> checker(1e-2, 1e-3);
-    this->blob_bottom_vec_.pop_back();
+//    this->blob_bottom_vec_.pop_back();
     checker.CheckGradientEltwise(&layer, this->blob_bottom_vec_,
         this->blob_top_vec_);
 }
@@ -186,7 +190,7 @@ TYPED_TEST(FractalJoinLayerTest, TestMeanDropPathGradient)
     fractal_join_param->add_drop_path_ratio(0.45);
     FractalJoinLayer<Dtype> layer(layer_param);
     GradientChecker<Dtype> checker(1e-2, 1e-3);
-    this->blob_bottom_vec_.pop_back();
+//    this->blob_bottom_vec_.pop_back();
     checker.CheckGradientEltwise(&layer, this->blob_bottom_vec_,
         this->blob_top_vec_);
 }
@@ -203,9 +207,11 @@ TYPED_TEST(FractalJoinLayerTest, TestMeanDropPathGradientGlobal)
     global_drop_param->add_undrop_path_ratio(1.0);
     global_drop_param->add_undrop_path_ratio(0.0);
     global_drop_param->add_undrop_path_ratio(0.0);
+    Dtype* data_d = this->blob_bottom_d_->mutable_cpu_data();
+    data_d[0] = Dtype(1);
     FractalJoinLayer<Dtype> layer(layer_param);
     GradientChecker<Dtype> checker(1e-2, 1e-3);
-    this->blob_bottom_vec_.pop_back();
+//    this->blob_bottom_vec_.pop_back();
     checker.CheckGradientEltwise(&layer, this->blob_bottom_vec_,
         this->blob_top_vec_);
 }
@@ -219,9 +225,10 @@ TYPED_TEST(FractalJoinLayerTest, TestSum)
     fractal_join_param->add_drop_path_ratio(0.0);
     fractal_join_param->add_drop_path_ratio(0.0);
     fractal_join_param->add_drop_path_ratio(0.0);
+    Dtype* data_d = this->blob_bottom_d_->mutable_cpu_data();
+    data_d[0] = Dtype(0);
     shared_ptr<FractalJoinLayer<Dtype> > layer(
         new FractalJoinLayer<Dtype>(layer_param));
-    this->blob_bottom_d_->SetGlobalDrop(false);
     layer->SetUp(this->blob_bottom_vec_, this->blob_top_vec_);
     layer->Forward(this->blob_bottom_vec_, this->blob_top_vec_);
     const Dtype* data = this->blob_top_->cpu_data();
@@ -243,9 +250,10 @@ TYPED_TEST(FractalJoinLayerTest, TestSumNotAll)
     fractal_join_param->add_drop_path_ratio(0.0);
     fractal_join_param->add_drop_path_ratio(1.0);
     fractal_join_param->add_drop_path_ratio(0.0);
+    Dtype* data_d = this->blob_bottom_d_->mutable_cpu_data();
+    data_d[0] = Dtype(0);
     shared_ptr<FractalJoinLayer<Dtype> > layer(
         new FractalJoinLayer<Dtype>(layer_param));
-    this->blob_bottom_d_->SetGlobalDrop(false);
     layer->SetUp(this->blob_bottom_vec_, this->blob_top_vec_);
     layer->Forward(this->blob_bottom_vec_, this->blob_top_vec_);
     const Dtype* data = this->blob_top_->cpu_data();
@@ -266,13 +274,15 @@ TYPED_TEST(FractalJoinLayerTest, TestSumGlobal)
     fractal_join_param->add_drop_path_ratio(0.0);
     fractal_join_param->add_drop_path_ratio(0.0);
     fractal_join_param->add_drop_path_ratio(0.0);
+    fractal_join_param->set_global_drop_this(1.0);
     GlobalDropParameter* global_drop_param = fractal_join_param->mutable_global_drop();
     global_drop_param->add_undrop_path_ratio(1.0);
     global_drop_param->add_undrop_path_ratio(0.0);
     global_drop_param->add_undrop_path_ratio(0.0);
+    Dtype* data_d = this->blob_bottom_d_->mutable_cpu_data();
+    data_d[0] = Dtype(1);
     shared_ptr<FractalJoinLayer<Dtype> > layer(
         new FractalJoinLayer<Dtype>(layer_param));
-    this->blob_bottom_d_->SetGlobalDrop(true);
     layer->SetUp(this->blob_bottom_vec_, this->blob_top_vec_);
     layer->Forward(this->blob_bottom_vec_, this->blob_top_vec_);
     const Dtype* data = this->blob_top_->cpu_data();
@@ -291,7 +301,7 @@ TYPED_TEST(FractalJoinLayerTest, TestSumGradient)
     fractal_join_param->set_sum_path_input(true);
     FractalJoinLayer<Dtype> layer(layer_param);
     GradientChecker<Dtype> checker(1e-2, 1e-3);
-    this->blob_bottom_vec_.pop_back();
+//    this->blob_bottom_vec_.pop_back();
     checker.CheckGradientEltwise(&layer, this->blob_bottom_vec_,
         this->blob_top_vec_);
 }
@@ -304,7 +314,7 @@ TYPED_TEST(FractalJoinLayerTest, TestSumGradientGlobal)
     fractal_join_param->set_sum_path_input(true);
     FractalJoinLayer<Dtype> layer(layer_param);
     GradientChecker<Dtype> checker(1e-2, 1e-3);
-    this->blob_bottom_vec_.pop_back();
+//    this->blob_bottom_vec_.pop_back();
     checker.CheckGradientEltwise(&layer, this->blob_bottom_vec_,
         this->blob_top_vec_);
 }
@@ -320,7 +330,7 @@ TYPED_TEST(FractalJoinLayerTest, TestSumDropPathGradient)
     fractal_join_param->add_drop_path_ratio(0.45);
     FractalJoinLayer<Dtype> layer(layer_param);
     GradientChecker<Dtype> checker(1e-2, 1e-3);
-    this->blob_bottom_vec_.pop_back();
+//    this->blob_bottom_vec_.pop_back();
     checker.CheckGradientEltwise(&layer, this->blob_bottom_vec_,
         this->blob_top_vec_);
 }
@@ -338,9 +348,11 @@ TYPED_TEST(FractalJoinLayerTest, TestSumDropPathGradientGlobal)
     global_drop_param->add_undrop_path_ratio(1.0);
     global_drop_param->add_undrop_path_ratio(0.0);
     global_drop_param->add_undrop_path_ratio(0.0);
+    Dtype* data_d = this->blob_bottom_d_->mutable_cpu_data();
+    data_d[0] = Dtype(1);
     FractalJoinLayer<Dtype> layer(layer_param);
     GradientChecker<Dtype> checker(1e-2, 1e-3);
-    this->blob_bottom_vec_.pop_back();
+//    this->blob_bottom_vec_.pop_back();
     checker.CheckGradientEltwise(&layer, this->blob_bottom_vec_,
         this->blob_top_vec_);
 }

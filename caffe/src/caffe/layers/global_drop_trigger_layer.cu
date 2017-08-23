@@ -10,11 +10,10 @@ void GlobalDropTriggerLayer<Dtype>::Forward_gpu(const vector<Blob<Dtype>*>& bott
 {
     Dtype global_drop_ratio = this->layer_param().global_drop_trigger_param().global_drop_ratio();
     if (caffe_rng_rand() <= global_drop_ratio * UINT_MAX) {
-        top[0]->SetGlobalDrop(true);
+        caffe_gpu_set(top[0]->count(), Dtype(1), top[0]->mutable_gpu_data());
     } else {
-        top[0]->SetGlobalDrop(false);
+        caffe_gpu_set(top[0]->count(), Dtype(0), top[0]->mutable_cpu_data());
     }
-    caffe_gpu_set(top[0]->count(), Dtype(0), top[0]->mutable_gpu_data());
     return;
 }
 

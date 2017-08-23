@@ -19,8 +19,7 @@ class GlobalDropTriggerLayerTest : public MultiDeviceTest<TypeParam> {
 protected:
     GlobalDropTriggerLayerTest()
         : blob_bottom_(new Blob<Dtype>(2, 3, 4, 5))
-        //        , blob_top_a_(new Blob<Dtype>())
-        , blob_top_b_(new Blob<Dtype>())
+        , blob_top_(new Blob<Dtype>())
     {
         // fill the values
         Caffe::set_random_seed(1701);
@@ -28,18 +27,15 @@ protected:
         UniformFiller<Dtype> filler(filler_param);
         filler.Fill(this->blob_bottom_);
         blob_bottom_vec_.push_back(blob_bottom_);
-        //        blob_top_vec_.push_back(blob_top_a_);
-        blob_top_vec_.push_back(blob_top_b_);
+        blob_top_vec_.push_back(blob_top_);
     }
     virtual ~GlobalDropTriggerLayerTest()
     {
         delete blob_bottom_;
-        //        delete blob_top_a_;
-        delete blob_top_b_;
+        delete blob_top_;
     }
     Blob<Dtype>* const blob_bottom_;
-    //    Blob<Dtype>* const blob_top_a_;
-    Blob<Dtype>* const blob_top_b_;
+    Blob<Dtype>* const blob_top_;
     vector<Blob<Dtype>*> blob_bottom_vec_;
     vector<Blob<Dtype>*> blob_top_vec_;
 };
@@ -55,10 +51,10 @@ TYPED_TEST(GlobalDropTriggerLayerTest, TestSetUp)
     shared_ptr<GlobalDropTriggerLayer<Dtype> > layer(
         new GlobalDropTriggerLayer<Dtype>(layer_param));
     layer->SetUp(this->blob_bottom_vec_, this->blob_top_vec_);
-    EXPECT_EQ(this->blob_top_b_->num(), 1);
-    EXPECT_EQ(this->blob_top_b_->channels(), 2);
-    EXPECT_EQ(this->blob_top_b_->height(), 1);
-    EXPECT_EQ(this->blob_top_b_->width(), 2);
+    EXPECT_EQ(this->blob_top_->num(), 1);
+    EXPECT_EQ(this->blob_top_->channels(), 2);
+    EXPECT_EQ(this->blob_top_->height(), 1);
+    EXPECT_EQ(this->blob_top_->width(), 2);
 }
 
 TYPED_TEST(GlobalDropTriggerLayerTest, TestPass)
@@ -71,17 +67,15 @@ TYPED_TEST(GlobalDropTriggerLayerTest, TestPass)
         new GlobalDropTriggerLayer<Dtype>(layer_param));
     layer->SetUp(this->blob_bottom_vec_, this->blob_top_vec_);
     layer->Forward(this->blob_bottom_vec_, this->blob_top_vec_);
-    const Dtype* data = this->blob_top_b_->cpu_data();
-    const int count = this->blob_top_b_->count();
-    //    const Dtype* in_data = this->blob_bottom_->cpu_data();
+    const Dtype* data = this->blob_top_->cpu_data();
+    const int count = this->blob_top_->count();
     for (int i = 0; i < count; ++i) {
-        EXPECT_NEAR(data[i], Dtype(0), 1e-4);
+        EXPECT_NEAR(data[i], Dtype(1), 1e-4);
     }
-    EXPECT_EQ(this->blob_top_b_->IsGlobalDrop(), true);
-    EXPECT_EQ(this->blob_top_b_->num(), 1);
-    EXPECT_EQ(this->blob_top_b_->channels(), 2);
-    EXPECT_EQ(this->blob_top_b_->height(), 1);
-    EXPECT_EQ(this->blob_top_b_->width(), 2);
+    EXPECT_EQ(this->blob_top_->num(), 1);
+    EXPECT_EQ(this->blob_top_->channels(), 2);
+    EXPECT_EQ(this->blob_top_->height(), 1);
+    EXPECT_EQ(this->blob_top_->width(), 2);
 }
 
 TYPED_TEST(GlobalDropTriggerLayerTest, TestPassGlobal)
@@ -94,16 +88,14 @@ TYPED_TEST(GlobalDropTriggerLayerTest, TestPassGlobal)
         new GlobalDropTriggerLayer<Dtype>(layer_param));
     layer->SetUp(this->blob_bottom_vec_, this->blob_top_vec_);
     layer->Forward(this->blob_bottom_vec_, this->blob_top_vec_);
-    const Dtype* data = this->blob_top_b_->cpu_data();
-    const int count = this->blob_top_b_->count();
-    //    const Dtype* in_data = this->blob_bottom_->cpu_data();
+    const Dtype* data = this->blob_top_->cpu_data();
+    const int count = this->blob_top_->count();
     for (int i = 0; i < count; ++i) {
         EXPECT_NEAR(data[i], Dtype(0), 1e-4);
     }
-    EXPECT_EQ(this->blob_top_b_->IsGlobalDrop(), false);
-    EXPECT_EQ(this->blob_top_b_->num(), 1);
-    EXPECT_EQ(this->blob_top_b_->channels(), 2);
-    EXPECT_EQ(this->blob_top_b_->height(), 1);
-    EXPECT_EQ(this->blob_top_b_->width(), 2);
+    EXPECT_EQ(this->blob_top_->num(), 1);
+    EXPECT_EQ(this->blob_top_->channels(), 2);
+    EXPECT_EQ(this->blob_top_->height(), 1);
+    EXPECT_EQ(this->blob_top_->width(), 2);
 }
 }
