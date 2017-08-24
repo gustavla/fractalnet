@@ -18,25 +18,7 @@ def fractal_drop_all(bottom, ratio, pool=False):
     if pool:
         for __i in range(len(bottom) - 1):
             bottom[__i] = caffe_net_fun.max_pool(bottom[__i], ks=2, stride=2)
-    if len(bottom) == 7:
-        return caffe_net_fun.fractal_drop(ratio, bottom[0], bottom[1],
-                                          bottom[2], bottom[3], bottom[4],
-                                          bottom[5], bottom[6])
-    elif len(bottom) == 6:
-        return caffe_net_fun.fractal_drop(ratio, bottom[0], bottom[1],
-                                          bottom[2], bottom[3], bottom[4],
-                                          bottom[5])
-    elif len(bottom) == 5:
-        return caffe_net_fun.fractal_drop(ratio, bottom[0], bottom[1],
-                                          bottom[2], bottom[3], bottom[4])
-    elif len(bottom) == 4:
-        return caffe_net_fun.fractal_drop(ratio, bottom[0], bottom[1],
-                                          bottom[2], bottom[3])
-    elif len(bottom) == 3:
-        return caffe_net_fun.fractal_drop(ratio, bottom[0], bottom[1],
-                                          bottom[2])
-    else:
-        return caffe_net_fun.fractal_drop(ratio, bottom[0], bottom[1])
+    return caffe_net_fun.fractal_drop(ratio, bottom)
 
 
 def fractal_block(bottom, n_out, phase, total_level):
