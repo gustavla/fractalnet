@@ -44,7 +44,6 @@ protected:
     virtual void Backward_gpu(const vector<Blob<Dtype>*>& top,
         const vector<bool>& propagate_down, const vector<Blob<Dtype>*>& bottom);
 
-    bool sum_path_input_;
     unsigned int total_undrop_;
     unsigned int bottom_size;
     std::vector<bool> drops_;
