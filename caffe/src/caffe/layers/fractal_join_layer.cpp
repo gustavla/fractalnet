@@ -71,9 +71,7 @@ void FractalJoinLayer<Dtype>::Forward_cpu(const vector<Blob<Dtype> *> &bottom,
   if (this->phase_ == TRAIN) {
     fill(drops_.begin(), drops_.end(), true);
     unsigned int drop_mark_ = 0;
-    Dtype global_drop_this =
-        this->layer_param().fractal_join_param().global_drop_this();
-    bool global_drop_ = caffe_rng_rand() < (global_drop_this * UINT_MAX);
+    bool global_drop_ = false;
     if (bottom_size < bottom.size()) {
       global_drop_ = (bottom[bottom_size]->asum_data() > Dtype(.5));
     }
