@@ -1,6 +1,6 @@
 FractalNet Generation
 =====================
-
+# OLD
 The ``fractalnet.py`` file will generate a line for each component in the network
 suitable for CIFAR-100. The number of filters, columns and reductions can
 easily be changed by editing the file. To review the output in color::
@@ -20,3 +20,12 @@ You will need to edit the data loading part of ``global.crox`` to link it up to 
 experimental set up.
 
 .. _crox: https://github.com/gustavla/crox
+# NEW
+The `caffe_net_fun.py` file includes some usefull function used for generating net in pycaffe.
+
+The `fra_gl.py` file can generates full fractalnet.
+
+The `fra_gl_train.prototxt` file, and `fra_gl_test.prototxt` file is the prototxt file for caffe.
+
+The `fra_gl_test.jpg` image is visualized fractalnet.
+
