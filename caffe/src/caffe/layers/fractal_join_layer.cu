@@ -7,8 +7,8 @@
 namespace caffe {
 
 template <typename Dtype>
-void FractalJoinLayer<Dtype>::Forward_gpu(const vector<Blob<Dtype>*>& bottom,
-                                          const vector<Blob<Dtype>*>& top) {
+void FractalJoinLayer<Dtype>::Forward_gpu(const vector<Blob<Dtype> *> &bottom,
+                                          const vector<Blob<Dtype> *> &top) {
   if (this->phase_ == TRAIN) {
     fill(drops_.begin(), drops_.end(), true);
     unsigned int drop_mark_ = 0;
@@ -47,7 +47,7 @@ void FractalJoinLayer<Dtype>::Forward_gpu(const vector<Blob<Dtype>*>& bottom,
     fill(drops_.begin(), drops_.end(), false);
     total_undrop_ = bottom_size;
   }
-  Dtype mult = Dtype(bottom_size) / Dtype(total_undrop_);
+  Dtype mult = Dtype(1) / Dtype(total_undrop_);
   caffe_gpu_set(top[0]->count(), Dtype(0), top[0]->mutable_gpu_data());
   for (int i = 0; i < bottom_size; ++i) {
     if (!drops_[i]) {
@@ -58,10 +58,10 @@ void FractalJoinLayer<Dtype>::Forward_gpu(const vector<Blob<Dtype>*>& bottom,
 }
 
 template <typename Dtype>
-void FractalJoinLayer<Dtype>::Backward_gpu(const vector<Blob<Dtype>*>& top,
-                                           const vector<bool>& propagate_down,
-                                           const vector<Blob<Dtype>*>& bottom) {
-  Dtype mult = Dtype(bottom_size) / Dtype(total_undrop_);
+void FractalJoinLayer<Dtype>::Backward_gpu(
+    const vector<Blob<Dtype> *> &top, const vector<bool> &propagate_down,
+    const vector<Blob<Dtype> *> &bottom) {
+  Dtype mult = Dtype(1) / Dtype(total_undrop_);
   for (int i = 0; i < bottom_size; ++i) {
     if (propagate_down[i]) {
       if (!drops_[i]) {
@@ -78,3 +78,4 @@ void FractalJoinLayer<Dtype>::Backward_gpu(const vector<Blob<Dtype>*>& top,
 INSTANTIATE_LAYER_GPU_FUNCS(FractalJoinLayer);
 
 }  // namespace caffe
+
